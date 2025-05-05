@@ -1,0 +1,49 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-size: 150%;
+    background-color: #3053F1;
+    min-height: 100%;
+  }
+
+  .app-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .window-body {
+    font-size: 120%;
+  }
+
+
+
+  .app-nav {
+    position: relative;     /* or 'absolute' for precise placement */
+    z-index: 10;            /* higher than your background */
+    margin-top: 50px;      /* adjust as needed to move down */
+    text-align: center;     /* optional: center links horizontally */
+    background: transparent;/* ensure it doesn't cover background */
+    font-family: inherit;   /* match your XP.css look if needed */
+  }  
+
+  .nav-links {
+    display: flex; /* Use Flexbox to arrange items in a row */
+    justify-content: center; /* Align items to the left (default) */
+    gap: 20px; /* Space between each link */
+    align-items: center; /* Optional: aligns vertically in the center */
+  }
+  
+  /* Optional: style the links themselves */
+  .nav-links a {
+    display: flex;
+    flex-direction: column; /* This arranges the icon and text vertically */
+    align-items: center; /* Center the icon and text within each link */
+    text-decoration: none; /* Remove the underline from the link */
+    font-weight: bold;
+  }
+

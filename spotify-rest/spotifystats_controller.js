@@ -5,9 +5,9 @@ require('dotenv').config();
 
 const app = express();
 
-const CLIENT_ID = '22b535e0cb5441e3ae789c10dec32291';
-const CLIENT_SECRET = 'd19a3e8cb7c943b689b125d0f727b93b';
-const REDIRECT_URI = 'https://75ba-128-193-154-133.ngrok-free.app/callback';
+const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
+const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
+const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
 
 app.get('/login', (req, res) => {
   const scope = 'user-read-private user-read-email user-top-read';
@@ -55,8 +55,11 @@ app.get('/callback', async (req, res) => {
         <p>Access Token: ${access_token}</p>
         <p>Refresh Token: ${refresh_token}</p>
         <a href="/top-artists?token=${access_token}">View Top Artists</a>
+        <a href="/top-tracks?token=${access_token}">View Top Tracks</a>
       `);
-      
+    //res.redirect(REDIRECT_URI /*+ '?token=${access_token}'*/);
+    //console.log("Uri: " + REDIRECT_URI);
+    
     } catch (error) {
       console.error('Error getting tokens:', error.response?.data || error.message);
       res.status(500).send('Error during authentication');
@@ -69,12 +72,28 @@ app.get('/top-artists', async (req, res) => {
     try {
       const response = await axios.get('https://api.spotify.com/v1/me/top/artists', {
         headers: { 'Authorization': `Bearer ${token}` },
-        params: { limit: 10, time_range: 'medium_term' }
+        params: { limit: 10, time_range: 'short_term' }
       });
       
       res.json(response.data.items);
     } catch (error) {
       console.error('Error fetching top artists:', error.response?.data || error.message);
+      res.status(500).send('Error fetching data');
+    }
+  });
+
+  app.get('/top-tracks', async (req, res) => {
+    const token = req.query.token;
+
+    try {
+      const response = await axios.get('https://api.spotify.com/v1/me/top/tracks', {
+        headers: { 'Authorization': `Bearer ${token}` },
+        params: { limit: 10, time_range: 'short_term' }
+      });
+      
+      res.json(response.data.items);
+    } catch (error) {
+      console.error('Error fetching top tracks:', error.response?.data || error.message);
       res.status(500).send('Error fetching data');
     }
   });
@@ -87,5 +106,5 @@ app.get('/top-artists', async (req, res) => {
   });
 
 app.listen(8080, () => {
-  console.log('Listening on https://75ba-128-193-154-133.ngrok-free.app');
+  console.log('Listening on ' + REDIRECT_URI.substring(0, REDIRECT_URI.length - 9));
 });
