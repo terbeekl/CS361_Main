@@ -15,7 +15,6 @@ function HomePage() {
   
   return (
     <div>
-      {/* Background Image */}
       <div
         style={{
           position: 'fixed',
@@ -31,7 +30,6 @@ function HomePage() {
         }}
       ></div>
   
-      {/* Foreground content */}
       <div
         style={{
           position: 'relative',
@@ -39,9 +37,7 @@ function HomePage() {
           display: 'flex',
           justifyContent: 'center',
           flexDirection: 'column',
-          alignItems: 'center',
-          //height: '100vh',
-          //paddingTop: '60px', // space from top
+          alignItems: 'center'
         }}
         >
           <Navigation/>
@@ -49,8 +45,7 @@ function HomePage() {
         width: '500px',
         height: '200px',
         position: 'relative',
-        top: '20px',
-        //left: '-100px'
+        top: '20px'
       }}>
         <div className="title-bar">
           <div className="title-bar-text">Spotify Stat</div>

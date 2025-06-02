@@ -68,7 +68,7 @@ function WelcomePage() {
           <p>Login with Spotify!</p>
         </div>
         <div className="field-row" style={{ justifyContent: "center" }}>
-          <a href="https://9bdc-128-193-154-133.ngrok-free.app/login">
+          <a href="https://4d81-2601-1c0-8081-9de0-6128-a1de-895b-90d4.ngrok-free.app/login">
             <button>Login</button>
           </a>
           </div>

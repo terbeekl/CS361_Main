@@ -10,19 +10,25 @@ import home_icon from "../assets/home_icon.png";
 export const TopArtistsPage = () => {
   const [artists, setArtists] = useState([]);
   const navigate = useNavigate();
+  const [timeRange, setTimeRange] = useState("short_term");
+  const [limit, setLimit] = useState(10);
+  
 
   useEffect(() => {
     const token = localStorage.getItem("spotify_access_token");
-
     if (!token) {
       navigate("/"); // Redirect to login if no token
       return;
+    } else {
+      fetchTopArtists();
     }
+  }, [navigate]);
 
-    const fetchTopArtists = async () => {
+  const fetchTopArtists = async () => {
+      const token = localStorage.getItem("spotify_access_token")
       try {
         const response = await axios.get(
-          "https://api.spotify.com/v1/me/top/artists?limit=10&time_range=short_term",
+          `https://api.spotify.com/v1/me/top/artists?limit=${limit}&time_range=${timeRange}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -34,9 +40,6 @@ export const TopArtistsPage = () => {
         console.error("Error fetching top artists:", error);
       }
     };
-
-    fetchTopArtists();
-  }, [navigate]);
 
   return (
     <div>
@@ -116,25 +119,26 @@ export const TopArtistsPage = () => {
         </menu>
         <article role="tabpanel">
         <fieldset>
-          <legend></legend>
           <label>Time Period - view statistics from the selected time period</label>
           <div className="field-row">
-            <select>
-                <option>4 weeks</option>
-                <option>6 months</option>
-                <option>1 year</option>
+            <select name="time_range" id="time_range" value={timeRange}
+                  onChange={(e) => setTimeRange(e.target.value)}>
+                <option value="short_term">4 weeks</option>
+                <option value="medium_term">6 months</option>
+                <option value="long_term">1 year</option>
             </select>
           </div>
           <br></br>
           <label>Display - view top 10 or top 50 artists</label>
           <div className="field-row">
-            <select>
-                <option>Top 10</option>
-                <option>Top 50</option>
+            <select name="limit" id="limit" value={limit}
+                  onChange={(e) => setLimit(Number(e.target.value))}>
+                <option value={10}>Top 10</option>
+                <option value={50}>Top 50</option>
             </select>
           </div>
           <br></br>
-          <button>Submit</button>
+          <button onClick={fetchTopArtists}>Submit</button>
         </fieldset>
         <ol style={{ paddingLeft: '1em' }}>
         {artists.map((artist, index) => (

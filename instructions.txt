@@ -1,0 +1,24 @@
+somewhere: ngrok start --all
+in Spotify dev tools: replace Spotify callback with 8080/callback
+in .env: replace SPOTIFY with 8080/callback
+         replace HOME with 5173
+in WelcomePage.jsx: replace Login redirect with 8080/login
+in GenerateSheetPage.jsx: fetchStats with 3002/stats-html
+in moodFetcher.js: 3002/mood
+in vite.config: replace with 5173 - https://
+
+
+
+in spotify-react directory (ass8): npm run dev
+
+microservices:
+in Image-Pull-Folder: python ImagePull.py
+in Mood-Word-Gen: node mood_generator.mjs
+in Stat-Sheet: node stat-sheet-generator
+in spotify-rest: node .\spotify3_controller.mjs
+
+
+
+https://3744-2601-1c0-8081-9de0-6128-a1de-895b-90d4.ngrok-free.app -> http://localhost:3002                  
+https://4d81-2601-1c0-8081-9de0-6128-a1de-895b-90d4.ngrok-free.app -> http://localhost:8080                   
+https://54e5-2601-1c0-8081-9de0-6128-a1de-895b-90d4.ngrok-free.app -> http://localhost:5173

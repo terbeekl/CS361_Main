@@ -10,6 +10,8 @@ import home_icon from "../assets/home_icon.png";
 export const TopTracksPage = () => {
   const [tracks, setTracks] = useState([]);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [timeRange, setTimeRange] = useState("short_term");
+  const [limit, setLimit] = useState(10);
   const navigate = useNavigate();
 
   const handleMakePlaylist = () => {
@@ -27,16 +29,21 @@ export const TopTracksPage = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("spotify_access_token");
-
     if (!token) {
       navigate("/"); // Redirect to login if no token
       return;
+    } else {   
+      fetchTopTracks();
     }
+  }, [navigate]);
 
-    const fetchTopTracks = async () => {
-      try {
+  const fetchTopTracks = async () => {
+    const token = localStorage.getItem("spotify_access_token");  
+    try {
+        //const song_count = document.getElementById('song_count').value;
+        //const time_length = document.getElementById('time_range').value;
         const response = await axios.get(
-          "https://api.spotify.com/v1/me/top/tracks?limit=10&time_range=short_term",
+          `https://api.spotify.com/v1/me/top/tracks?limit=${limit}&time_range=${timeRange}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -49,57 +56,53 @@ export const TopTracksPage = () => {
       }
     };
 
-    fetchTopTracks();
-
-  }, [navigate]);
-
   const makePlaylist = async () => {
     const token = localStorage.getItem("spotify_access_token");
-    // if (!token) {
-    //     navigate("/");
-    //     return;
-    // }
-    // try {
-    //     const userResponse = await axios.get("https://api.spotify.com/v1/me", {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`,
-    //         }
-    //     });
-    //     const userId = userResponse.data.id;
+    if (!token) {
+        navigate("/");
+        return;
+    }
+    try {
+        const userResponse = await axios.get("https://api.spotify.com/v1/me", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        const userId = userResponse.data.id;
 
-    //     const playlistResponse = await axios.post(
-    //         `https://api.spotify.com/v1/users/${userId}/playlists`,
-    //         {
-    //             name: "Top Tracks - Spotify Stat",
-    //             description: "Your top 10 tracks from the past 4 weeks!!",
-    //             public: false
-    //         },
-    //         {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`,
-    //                 "Content-Type": "application/json"
-    //             }
-    //         }
-    //     );
-    //     const playlistId = playlistResponse.data.id;
-    //     const uris = tracks.map((track) => track.uri);
+        const playlistResponse = await axios.post(
+            `https://api.spotify.com/v1/users/${userId}/playlists`,
+            {
+                name: "Top Tracks - Spotify Stat",
+                description: "Your top 10 tracks from the past 4 weeks!!",
+                public: false
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+        const playlistId = playlistResponse.data.id;
+        const uris = tracks.map((track) => track.uri);
 
-    //     await axios.post(
-    //         `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
-    //         {
-    //             uris: uris
-    //         },
-    //         {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`,
-    //                 "Content-Type": "application/json"
-    //             }
-    //         }
-    //     );
-    //     alert("Playlist created and top tracks added!");
-    // } catch (error) {
-    //     console.error("Error creating playlist:", error);
-    // }
+        await axios.post(
+            `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+            {
+                uris: uris
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+        //alert("Playlist created and top tracks added!");
+    } catch (error) {
+        console.error("Error creating playlist:", error);
+    }
   };
 
   return (
@@ -180,25 +183,26 @@ export const TopTracksPage = () => {
             </menu>
             <article role="tabpanel">
             <fieldset>
-              <legend></legend>
               <label>Time Period - view statistics from the selected time period</label>
               <div className="field-row">
-                <select>
-                    <option>4 weeks</option>
-                    <option>6 months</option>
-                    <option>1 year</option>
+                <select name="time_range" id="time_range" value={timeRange}
+                  onChange={(e) => setTimeRange(e.target.value)}>
+                    <option value="short_term">4 weeks</option>
+                    <option value="medium_term">6 months</option>
+                    <option value="long_term">1 year</option>
                 </select>
               </div>
               <br></br>
               <label>Display - view top 10 or top 50 tracks</label>
               <div className="field-row">
-                <select>
-                    <option>Top 10</option>
-                    <option>Top 50</option>
+                <select name="limit" id="limit" value={limit}
+                  onChange={(e) => setLimit(Number(e.target.value))}>
+                    <option value={10}>Top 10</option>
+                    <option value={50}>Top 50</option>
                 </select>
               </div>
               <br></br>
-              <button>Submit</button>
+              <button onClick={fetchTopTracks}>Submit</button>
             </fieldset>
             
             <ol style={{ paddingLeft: '1em'}}>
@@ -248,8 +252,8 @@ export const TopTracksPage = () => {
                         <button aria-label="Close"></button>
                       </div>
                   </div>
-                  <div className="window-body">
-                    <p>Are you sure you want to create a playlist?</p>
+                  <div className="window-body" style={{ fontFamily: "Pixelated MS Sans Serif" }}>
+                    <p style={{fontWeight: "bold"}}>Are you sure you want to create a playlist?</p>
                     <p>(You will have to go into your Spotify account to delete unwanted playlists)</p>
                   </div>
                   <div className="field-row" style={{ justifyContent: "center" }}>

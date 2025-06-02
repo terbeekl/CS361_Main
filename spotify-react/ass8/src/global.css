@@ -47,3 +47,10 @@ html, body {
     font-weight: bold;
   }
 
+  .square-image {
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    box-shadow: 2px 2px 3px #d3d3d3;
+  }
+
